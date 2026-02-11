@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Journey For Nidhi</title>
+    <meta name="description" content="A Valentine's Day surprise crafted with love by Harshil">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Canvas-based floating particles background -->
+    <canvas id="particles-canvas" class="particles-canvas"></canvas>
+
+    <!-- Progress bar across all screens -->
+    <div class="progress-bar-container" id="progress-bar-container">
+        <div class="progress-bar-track">
+            <div class="progress-bar-fill" id="progress-bar-fill"></div>
+        </div>
+        <div class="progress-dots">
+            <div class="progress-dot active" data-step="1">
+                <svg viewBox="0 0 24 24" width="14" height="14"><path d="M9 12l2 2 4-4" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>
+            </div>
+            <div class="progress-dot" data-step="2">
+                <svg viewBox="0 0 24 24" width="14" height="14"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+            </div>
+            <div class="progress-dot" data-step="3">
+                <svg viewBox="0 0 24 24" width="14" height="14"><rect x="3" y="3" width="7" height="7" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="14" y="3" width="7" height="7" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="14" width="7" height="7" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="14" y="14" width="7" height="7" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+            </div>
+            <div class="progress-dot" data-step="4">
+                <svg viewBox="0 0 24 24" width="14" height="14"><path d="M4 7h16M4 12h10M4 17h14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </div>
+            <div class="progress-dot" data-step="5">
+                <svg viewBox="0 0 24 24" width="14" height="14"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14l-4-4 1.41-1.41L11 13.17l5.59-5.59L18 9l-7 7z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+            </div>
+            <div class="progress-dot" data-step="6">
+                <svg viewBox="0 0 24 24" width="14" height="14"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+            </div>
+            <div class="progress-dot" data-step="7">
+                <svg viewBox="0 0 24 24" width="14" height="14"><polygon points="12,2 15,9 22,9 16,14 18,21 12,17 6,21 8,14 2,9 9,9" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== SCREEN 1: CAPTCHA ========== -->
+    <div id="screen-captcha" class="screen active">
+        <div class="captcha-container">
+            <div class="captcha-header">
+                <div class="captcha-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/>
+                    </svg>
+                </div>
+                <div class="captcha-title">
+                    <span class="captcha-label">luvCAPTCHA</span>
+                    <h2>Select all images of <span class="highlight">your Valentine</span></h2>
+                    <p class="captcha-subtitle">If you don't know who he is, Nidhi... we need to talk</p>
+                </div>
+            </div>
+            <div class="captcha-grid" id="captcha-grid">
+                <!-- Images populated by JS -->
+            </div>
+            <div class="captcha-footer">
+                <div class="captcha-status" id="captcha-status">
+                    <span class="status-dot"></span>
+                    <span id="status-text">Select all matching images</span>
+                </div>
+                <button class="captcha-verify-btn" id="captcha-verify" disabled>
+                    <span>VERIFY</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== SCREEN 2: CARD ENVELOPE ========== -->
+    <div id="screen-envelope" class="screen">
+        <div class="envelope-scene">
+            <p class="envelope-hint">
+                <svg class="sparkle-icon" viewBox="0 0 24 24" width="20" height="20"><polygon points="12,2 15,9 22,9 16,14 18,21 12,17 6,21 8,14 2,9 9,9" fill="#ffd700"/></svg>
+                Tap to open your letter, Nidhi
+                <svg class="sparkle-icon" viewBox="0 0 24 24" width="20" height="20"><polygon points="12,2 15,9 22,9 16,14 18,21 12,17 6,21 8,14 2,9 9,9" fill="#ffd700"/></svg>
+            </p>
+            <div class="envelope-wrapper" id="envelope-wrapper">
+                <div class="envelope" id="envelope">
+                    <div class="envelope-flap" id="envelope-flap"></div>
+                    <div class="envelope-body">
+                        <div class="heart-seal">
+                            <svg viewBox="0 0 24 24" width="48" height="48">
+                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 
+                                2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 
+                                14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 
+                                6.86-8.55 11.54L12 21.35z" fill="white" opacity="0.9"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="letter" id="letter">
+                        <div class="letter-content">
+                            <p class="letter-greeting">My Dearest Nidhi,</p>
+                            <p class="letter-body">Every moment with you feels like a dream I never want to wake up from. You make my world brighter, warmer, and so much more beautiful. Before I ask you something important, I have a few little challenges for you...</p>
+                            <p class="letter-signature">Forever yours, Harshil</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="continue-btn" id="continue-to-puzzle" style="display:none;">
+                Ready for some challenges?
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- ========== SCREEN 3: SLIDING TILE PUZZLE ========== -->
+    <div id="screen-puzzle" class="screen">
+        <div class="puzzle-scene">
+            <div class="puzzle-header">
+                <h2 class="puzzle-title">Piece Together Our Favorite Memory</h2>
+                <p class="puzzle-subtitle">Slide the tiles to complete the picture</p>
+            </div>
+            <div class="puzzle-area">
+                <div class="puzzle-reference">
+                    <img src="images/couple_cherry_blossom.jpg" alt="Reference" id="puzzle-ref-img">
+                    <span class="ref-label">Goal</span>
+                </div>
+                <div class="puzzle-grid" id="puzzle-grid">
+                    <!-- 3x3 tiles populated by JS -->
+                </div>
+            </div>
+            <div class="puzzle-controls">
+                <div class="puzzle-moves">
+                    <span class="moves-label">Moves</span>
+                    <span class="moves-count" id="move-count">0</span>
+                </div>
+                <button class="hint-btn" id="hint-btn">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/>
+                    </svg>
+                    Peek
+                </button>
+            </div>
+            <div class="puzzle-complete-overlay" id="puzzle-complete" style="display:none;">
+                <div class="puzzle-complete-content">
+                    <img src="images/couple_cherry_blossom.jpg" alt="Our memory" class="puzzle-complete-img">
+                    <h3>Every piece of my life fits better with you in it</h3>
+                    <button class="continue-btn" id="continue-to-scramble">
+                        Next Challenge
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== SCREEN 4: WORD SCRAMBLE ========== -->
+    <div id="screen-scramble" class="screen">
+        <div class="scramble-scene">
+            <div class="scramble-header">
+                <h2 class="scramble-title">Unscramble Our Love Story</h2>
+                <p class="scramble-subtitle">Rearrange the letters to reveal words that describe us</p>
+            </div>
+            <div class="scramble-progress-text">
+                <span id="scramble-round">1</span> / <span id="scramble-total">4</span>
+            </div>
+            <div class="scramble-game" id="scramble-game">
+                <div class="scramble-hint-text" id="scramble-hint-text"></div>
+                <div class="scramble-tiles" id="scramble-tiles">
+                    <!-- Letter tiles populated by JS -->
+                </div>
+                <div class="scramble-answer" id="scramble-answer">
+                    <!-- Answer slots populated by JS -->
+                </div>
+                <div class="scramble-actions">
+                    <button class="scramble-clear-btn" id="scramble-clear">Clear</button>
+                    <button class="scramble-submit-btn" id="scramble-submit" disabled>Check</button>
+                </div>
+            </div>
+            <div class="scramble-reveal" id="scramble-reveal" style="display:none;">
+                <img src="" alt="Us" class="scramble-reveal-img" id="scramble-reveal-img">
+                <p class="scramble-reveal-msg" id="scramble-reveal-msg"></p>
+                <button class="continue-btn" id="scramble-next">
+                    <span id="scramble-next-text">Next Word</span>
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== SCREEN 5: MEMORY MATCH ========== -->
+    <div id="screen-memory" class="screen">
+        <div class="memory-scene">
+            <div class="memory-header">
+                <h2 class="memory-title">Match Our Memories</h2>
+                <p class="memory-subtitle">Find all the matching pairs</p>
+            </div>
+            <div class="memory-stats">
+                <div class="memory-stat">
+                    <span class="stat-label">Matches</span>
+                    <span class="stat-value" id="match-count">0 / 8</span>
+                </div>
+                <div class="memory-stat">
+                    <span class="stat-label">Flips</span>
+                    <span class="stat-value" id="flip-count">0</span>
+                </div>
+            </div>
+            <div class="memory-grid" id="memory-grid">
+                <!-- 4x4 grid populated by JS -->
+            </div>
+            <div class="memory-complete-overlay" id="memory-complete" style="display:none;">
+                <div class="memory-complete-content">
+                    <img src="images/couple_graduation.jpg" alt="Us" class="memory-complete-img">
+                    <h3>Our memories together are the best kind</h3>
+                    <button class="continue-btn" id="continue-to-question">
+                        Time for the big question...
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== SCREEN 6: THE QUESTION ========== -->
+    <div id="screen-question" class="screen">
+        <div class="question-scene">
+            <div class="sparkle-ring">
+                <svg class="sparkle-orbit sparkle-orbit-1" viewBox="0 0 24 24" width="16" height="16"><polygon points="12,2 15,9 22,9 16,14 18,21 12,17 6,21 8,14 2,9 9,9" fill="#ffd700" opacity="0.8"/></svg>
+                <svg class="sparkle-orbit sparkle-orbit-2" viewBox="0 0 24 24" width="12" height="12"><polygon points="12,2 15,9 22,9 16,14 18,21 12,17 6,21 8,14 2,9 9,9" fill="#f48fb1" opacity="0.6"/></svg>
+                <svg class="sparkle-orbit sparkle-orbit-3" viewBox="0 0 24 24" width="14" height="14"><polygon points="12,2 15,9 22,9 16,14 18,21 12,17 6,21 8,14 2,9 9,9" fill="#ffd700" opacity="0.7"/></svg>
+            </div>
+            <div class="question-couple-img">
+                <img src="images/couple_holding_hands.jpg" alt="Harshil & Nidhi" class="question-img">
+            </div>
+            <h1 class="question-title">
+                <span class="question-line1">Nidhi, Will You Be</span>
+                <span class="question-line2">My Valentine?</span>
+                <span class="question-heart">
+                    <svg viewBox="0 0 24 24" width="52" height="52">
+                        <defs>
+                            <linearGradient id="heart-grad" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#ec407a"/>
+                                <stop offset="100%" stop-color="#e53935"/>
+                            </linearGradient>
+                        </defs>
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 
+                        2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 
+                        14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 
+                        6.86-8.55 11.54L12 21.35z" fill="url(#heart-grad)"/>
+                    </svg>
+                </span>
+            </h1>
+            <div class="button-area">
+                <button class="btn-yes" id="btn-yes">Yes!</button>
+            </div>
+            <p class="yes-hint" id="yes-hint" style="display:none;"></p>
+        </div>
+        <!-- No button lives OUTSIDE question-scene so it can be position:fixed on viewport -->
+        <button class="btn-no" id="btn-no">No</button>
+    </div>
+
+    <!-- ========== SCREEN 7: CELEBRATION ========== -->
+    <div id="screen-celebration" class="screen">
+        <div class="celebration-scene">
+            <div class="celebration-content">
+                <h1 class="celebration-title">YAAAY!</h1>
+                <h2 class="celebration-subtitle">I knew you'd say yes, Nidhi!</h2>
+                <p class="celebration-message">You just made Harshil the happiest person in the world!</p>
+                <div class="celebration-photos-scroll">
+                    <div class="celebration-photos-track">
+                        <div class="celebration-photo"><img src="images/couple_cherry_blossom.jpg" alt="Us"></div>
+                        <div class="celebration-photo"><img src="images/couple_holding_hands.jpg" alt="Us"></div>
+                        <div class="celebration-photo"><img src="images/couple_graduation.jpg" alt="Us"></div>
+                        <div class="celebration-photo"><img src="images/couple_movie.jpg" alt="Us"></div>
+                        <div class="celebration-photo"><img src="images/couple_parasailing.jpg" alt="Us"></div>
+                        <div class="celebration-photo"><img src="images/couple_themepark.jpg" alt="Us"></div>
+                        <div class="celebration-photo"><img src="images/couple_shopping.jpg" alt="Us"></div>
+                        <div class="celebration-photo"><img src="images/couple_dinner.jpg" alt="Us"></div>
+                        <!-- Duplicate for seamless loop -->
+                        <div class="celebration-photo"><img src="images/couple_cherry_blossom.jpg" alt="Us"></div>
+                        <div class="celebration-photo"><img src="images/couple_holding_hands.jpg" alt="Us"></div>
+                        <div class="celebration-photo"><img src="images/couple_graduation.jpg" alt="Us"></div>
+                        <div class="celebration-photo"><img src="images/couple_movie.jpg" alt="Us"></div>
+                    </div>
+                </div>
+                <div class="celebration-hearts" id="celebration-hearts">
+                    <!-- SVG hearts rendered by JS -->
+                </div>
+                <div class="celebration-names">
+                    <span class="name-harshil">Harshil</span>
+                    <span class="name-plus">+</span>
+                    <span class="name-nidhi">Nidhi</span>
+                    <span class="name-equals">=</span>
+                    <span class="name-forever">Forever</span>
+                </div>
+                <p class="celebration-footer">Happy Valentine's Day, my love</p>
+            </div>
+        </div>
+        <canvas id="confetti-canvas"></canvas>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
