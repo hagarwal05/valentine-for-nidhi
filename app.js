@@ -103,8 +103,58 @@ let matchedPairs = 0;
 let totalFlips = 0;
 let memoryLocked = false;
 
+// Love Quiz questions
+const QUIZ_QUESTIONS = [
+    {
+        question: 'What is Harshil\'s love language?',
+        options: ['Words of Affirmation', 'Acts of Service', 'Quality Time', 'Physical Touch'],
+        correct: 2,
+        feedback: 'Every minute with you counts!',
+        image: 'images/couple_movie.jpg',
+    },
+    {
+        question: 'What would Harshil pick for a perfect date?',
+        options: ['Fancy restaurant', 'Movie night at home', 'Parasailing adventure', 'Both B and C!'],
+        correct: 3,
+        feedback: 'As long as it\'s with you!',
+        image: 'images/couple_parasailing.jpg',
+    },
+    {
+        question: 'How does Harshil feel when Nidhi smiles?',
+        options: ['Happy', 'Speechless', 'Like the whole world stops', 'All of the above'],
+        correct: 3,
+        feedback: 'Your smile is my favorite thing!',
+        image: 'images/couple_cherry_blossom.jpg',
+    },
+    {
+        question: 'What would Harshil do for Nidhi?',
+        options: ['Anything', 'Everything', 'Literally anything', 'All of the above, obviously'],
+        correct: 3,
+        feedback: 'Every single answer was right!',
+        image: 'images/couple_holding_hands.jpg',
+    },
+    {
+        question: 'Harshil + Nidhi = ?',
+        options: ['Cute', 'Adorable', 'Perfect', 'Forever'],
+        correct: 3,
+        feedback: 'Forever and always!',
+        image: 'images/couple_graduation.jpg',
+    },
+];
+
+// Catch game state
+let catchScore = 0;
+let catchTimer = 15;
+let catchInterval = null;
+let catchSpawnInterval = null;
+let catchActive = false;
+
+// Quiz state
+let quizRound = 0;
+let quizScore = 0;
+
 // ——— Screen order ———
-const SCREEN_ORDER = ['captcha', 'envelope', 'puzzle', 'scramble', 'memory', 'question', 'celebration'];
+const SCREEN_ORDER = ['captcha', 'envelope', 'puzzle', 'scramble', 'memory', 'quiz', 'catch', 'question', 'celebration'];
 
 // ——— DOM Elements ———
 const screens = {};
@@ -122,6 +172,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initPuzzle();
     initScramble();
     initMemory();
+    initQuiz();
+    initCatch();
     initQuestionButtons();
     initCelebrationHearts();
     updateProgress(0);
@@ -649,7 +701,7 @@ function nextScrambleRound() {
 // ============================================
 function initMemory() {
     const grid = document.getElementById('memory-grid');
-    const continueBtn = document.getElementById('continue-to-question');
+    const continueBtn = document.getElementById('continue-to-quiz');
 
     // Create pairs
     let cards = [];
@@ -697,8 +749,9 @@ function initMemory() {
     });
 
     continueBtn.addEventListener('click', () => {
-        switchScreen('memory', 'question');
+        switchScreen('memory', 'quiz');
         updateProgress(5);
+        loadQuizQuestion();
     });
 }
 
@@ -786,7 +839,238 @@ function shuffleArray(array) {
 }
 
 // ============================================
-// SCREEN 6: THE QUESTION (YES / NO)
+// SCREEN 6: LOVE QUIZ
+// ============================================
+function initQuiz() {
+    const continueBtn = document.getElementById('continue-to-catch');
+    continueBtn.addEventListener('click', () => {
+        switchScreen('quiz', 'catch');
+        updateProgress(6);
+    });
+}
+
+function loadQuizQuestion() {
+    if (quizRound >= QUIZ_QUESTIONS.length) {
+        showQuizComplete();
+        return;
+    }
+
+    const q = QUIZ_QUESTIONS[quizRound];
+    document.getElementById('quiz-round').textContent = quizRound + 1;
+    document.getElementById('quiz-total').textContent = QUIZ_QUESTIONS.length;
+    document.getElementById('quiz-question').textContent = q.question;
+    document.getElementById('quiz-feedback').style.display = 'none';
+
+    const optionsEl = document.getElementById('quiz-options');
+    optionsEl.innerHTML = '';
+
+    q.options.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'quiz-option';
+        btn.textContent = opt;
+        btn.addEventListener('click', () => handleQuizAnswer(i, q, optionsEl));
+        optionsEl.appendChild(btn);
+    });
+
+    // Animate card
+    const card = document.getElementById('quiz-card');
+    card.style.animation = 'none';
+    card.offsetHeight;
+    card.style.animation = 'fadeInUp 0.5s ease';
+}
+
+function handleQuizAnswer(selected, q, optionsEl) {
+    const buttons = optionsEl.querySelectorAll('.quiz-option');
+    buttons.forEach((btn, i) => {
+        btn.classList.add('quiz-option-disabled');
+        if (i === q.correct) btn.classList.add('quiz-option-correct');
+        else if (i === selected && selected !== q.correct) btn.classList.add('quiz-option-wrong');
+    });
+
+    if (selected === q.correct) {
+        quizScore++;
+        document.getElementById('quiz-score').textContent = quizScore;
+    }
+
+    // Show feedback
+    const feedbackEl = document.getElementById('quiz-feedback');
+    document.getElementById('quiz-feedback-img').src = q.image;
+    document.getElementById('quiz-feedback-text').textContent = q.feedback;
+    feedbackEl.style.display = 'block';
+
+    // Auto-advance after delay
+    setTimeout(() => {
+        quizRound++;
+        loadQuizQuestion();
+    }, 2200);
+}
+
+function showQuizComplete() {
+    const overlay = document.getElementById('quiz-complete');
+    const msg = document.getElementById('quiz-complete-msg');
+
+    if (quizScore === QUIZ_QUESTIONS.length) {
+        msg.textContent = 'Perfect score! You really know us!';
+    } else if (quizScore >= 3) {
+        msg.textContent = 'You know us so well!';
+    } else {
+        msg.textContent = `${quizScore} out of ${QUIZ_QUESTIONS.length} — we have more memories to make!`;
+    }
+
+    overlay.style.display = 'flex';
+}
+
+// ============================================
+// SCREEN 7: CATCH THE HEARTS
+// ============================================
+function initCatch() {
+    const startBtn = document.getElementById('catch-start-btn');
+    const continueBtn = document.getElementById('continue-to-question');
+
+    startBtn.addEventListener('click', () => {
+        document.getElementById('catch-start').style.display = 'none';
+        startCatchGame();
+    });
+
+    continueBtn.addEventListener('click', () => {
+        switchScreen('catch', 'question');
+        updateProgress(7);
+    });
+}
+
+function startCatchGame() {
+    catchScore = 0;
+    catchTimer = 15;
+    catchActive = true;
+    document.getElementById('catch-score').textContent = '0';
+    document.getElementById('catch-timer').textContent = '15';
+
+    // Timer countdown
+    catchInterval = setInterval(() => {
+        catchTimer--;
+        document.getElementById('catch-timer').textContent = catchTimer;
+
+        if (catchTimer <= 0) {
+            endCatchGame();
+        }
+    }, 1000);
+
+    // Spawn hearts
+    catchSpawnInterval = setInterval(() => {
+        if (catchActive) spawnCatchHeart();
+    }, 400);
+}
+
+function spawnCatchHeart() {
+    const area = document.getElementById('catch-area');
+    const areaWidth = area.offsetWidth;
+
+    const heart = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    const size = 24 + Math.random() * 20;
+    heart.setAttribute('viewBox', '0 0 24 24');
+    heart.setAttribute('width', size);
+    heart.setAttribute('height', size);
+    heart.classList.add('catch-heart');
+
+    const colors = ['#ec407a', '#e91e63', '#f06292', '#d81b60', '#ff80ab', '#e53935'];
+    const color = colors[Math.floor(Math.random() * colors.length)];
+
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', 'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z');
+    path.setAttribute('fill', color);
+    heart.appendChild(path);
+
+    const x = Math.random() * (areaWidth - size);
+    heart.style.left = x + 'px';
+    heart.style.top = '-60px';
+
+    // Random fall speed
+    const fallDuration = 2 + Math.random() * 2;
+    heart.style.animationDuration = fallDuration + 's';
+
+    // Click/tap to catch
+    const catchHandler = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!catchActive) return;
+        heart.classList.add('caught');
+        heart.removeEventListener('click', catchHandler);
+        heart.removeEventListener('touchstart', catchHandler);
+
+        catchScore++;
+        document.getElementById('catch-score').textContent = catchScore;
+
+        // Burst particles
+        const rect = heart.getBoundingClientRect();
+        const areaRect = area.getBoundingClientRect();
+        const cx = rect.left - areaRect.left + rect.width / 2;
+        const cy = rect.top - areaRect.top + rect.height / 2;
+        createCatchBurst(area, cx, cy, color);
+
+        setTimeout(() => heart.remove(), 300);
+
+        // Check if reached goal early
+        if (catchScore >= 15) {
+            endCatchGame();
+        }
+    };
+
+    heart.addEventListener('click', catchHandler);
+    heart.addEventListener('touchstart', catchHandler, { passive: false });
+
+    area.appendChild(heart);
+
+    // Remove after animation ends
+    setTimeout(() => {
+        if (heart.parentNode && !heart.classList.contains('caught')) {
+            heart.remove();
+        }
+    }, fallDuration * 1000 + 100);
+}
+
+function createCatchBurst(container, x, y, color) {
+    const burstCount = 6;
+    for (let i = 0; i < burstCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'catch-burst';
+        const angle = (Math.PI * 2 / burstCount) * i;
+        const dist = 15 + Math.random() * 20;
+        particle.style.left = x + 'px';
+        particle.style.top = y + 'px';
+        particle.style.background = color;
+        particle.style.setProperty('--bx', Math.cos(angle) * dist + 'px');
+        particle.style.setProperty('--by', Math.sin(angle) * dist + 'px');
+        container.appendChild(particle);
+        setTimeout(() => particle.remove(), 500);
+    }
+}
+
+function endCatchGame() {
+    catchActive = false;
+    clearInterval(catchInterval);
+    clearInterval(catchSpawnInterval);
+
+    // Remove remaining hearts
+    document.querySelectorAll('.catch-heart').forEach(h => h.remove());
+
+    const overlay = document.getElementById('catch-complete');
+    const msg = document.getElementById('catch-complete-msg');
+
+    if (catchScore >= 15) {
+        msg.textContent = 'You caught ALL the love! Amazing!';
+    } else if (catchScore >= 10) {
+        msg.textContent = `${catchScore} hearts caught! So much love!`;
+    } else {
+        msg.textContent = `${catchScore} hearts — every bit of love counts!`;
+    }
+
+    setTimeout(() => {
+        overlay.style.display = 'flex';
+    }, 500);
+}
+
+// ============================================
+// SCREEN 8: THE QUESTION (YES / NO)
 // ============================================
 function initQuestionButtons() {
     const btnNo = document.getElementById('btn-no');
@@ -817,7 +1101,7 @@ function initQuestionButtons() {
         } else {
             btnNo.style.display = 'none';
             switchScreen('question', 'celebration');
-            updateProgress(6);
+            updateProgress(8);
             startCelebration();
         }
     });
